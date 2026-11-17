@@ -1,41 +1,35 @@
-{
-  "name": "aim-trainer-by-vinay",
-  "version": "1.0.0",
-  "description": "Aim Trainer by Vinay",
-  "main": "main.js",
-  "author": "Vinay",
-  "license": "MIT",
-  "scripts": {
-    "build:win": "electron-builder --win nsis --x64"
-  },
-  "devDependencies": {
-    "electron": "^39.2.7",
-    "electron-builder": "^26.0.12"
-  },
-  "build": {
-    "appId": "com.vinay.aimtrainer",
-    "productName": "Aim Trainer by Vinay",
-    "asar": true,
-    "files": [
-      "aim.html",
-      "main.js",
-      "package.json"
-    ],
-    "win": {
-      "target": [
-        {
-          "target": "nsis",
-          "arch": ["x64"]
-        }
-      ]
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
-      "perMachine": false,
-      "createDesktopShortcut": true,
-      "createStartMenuShortcut": true,
-      "shortcutName": "Aim Trainer by Vinay"
-    }
-  }
-}
+name: Build Aim Trainer for Windows
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Get project
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        working-directory: ./Aim-Trainer-by-Vinay-GitHub-EXE-Build/aim-trainer-github-build
+        run: npm install
+
+      - name: Build Windows EXE
+        working-directory: ./Aim-Trainer-by-Vinay-GitHub-EXE-Build/aim-trainer-github-build
+        run: npm run build:win
+
+      - name: Upload EXE
+        uses: actions/upload-artifact@v4
+        with:
+          name: Aim-Trainer-by-Vinay-Windows
+          path: ./Aim-Trainer-by-Vinay-GitHub-EXE-Build/aim-trainer-github-build/dist/*.exe
+          if-no-files-found: error
