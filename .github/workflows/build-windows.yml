@@ -3,27 +3,33 @@ name: Build Aim Trainer for Windows
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
-  build:
+  build-windows:
     runs-on: windows-latest
 
     steps:
-      - name: Get files
+      - name: Get project
         uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
-      - name: Install Electron
+      - name: Install dependencies
+        working-directory: ./Aim-Trainer-by-Vinay-GitHub-EXE-Build
         run: npm install
 
       - name: Build Windows EXE
-        run: npx electron-builder --win
+        working-directory: ./Aim-Trainer-by-Vinay-GitHub-EXE-Build
+        run: npm run build:win
 
       - name: Upload EXE
         uses: actions/upload-artifact@v4
         with:
           name: Aim-Trainer-by-Vinay-Windows
-          path: dist/*.exe
+          path: ./Aim-Trainer-by-Vinay-GitHub-EXE-Build/dist/*.exe
+          if-no-files-found: error
