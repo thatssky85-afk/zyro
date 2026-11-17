@@ -10,6 +10,10 @@ jobs:
   build-windows:
     runs-on: windows-latest
 
+    defaults:
+      run:
+        working-directory: Aim-Trainer-by-Vinay-GitHub-EXE-Build/aim-trainer-github-build
+
     steps:
       - name: Get project
         uses: actions/checkout@v4
@@ -18,18 +22,21 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
+          cache-dependency-path: Aim-Trainer-by-Vinay-GitHub-EXE-Build/aim-trainer-github-build/package.json
 
       - name: Install dependencies
-        working-directory: ./Aim-Trainer-by-Vinay-GitHub-EXE-Build
-        run: npm install
+        run: npm install --no-audit --no-fund
 
       - name: Build Windows EXE
-        working-directory: ./Aim-Trainer-by-Vinay-GitHub-EXE-Build
         run: npm run build:win
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
 
       - name: Upload EXE
         uses: actions/upload-artifact@v4
         with:
-          name: Aim-Trainer-by-Vinay-Windows
-          path: ./Aim-Trainer-by-Vinay-GitHub-EXE-Build/dist/*.exe
+          name: Aim-Trainer-Windows
+          path: Aim-Trainer-by-Vinay-GitHub-EXE-Build/aim-trainer-github-build/dist/*.exe
           if-no-files-found: error
+          
